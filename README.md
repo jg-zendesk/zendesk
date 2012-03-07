@@ -28,15 +28,14 @@ To support additional services/endpoints, simply declare it in the `Zendesk::API
     
 - declares support for fetching a Ticket resource as described in http://www.zendesk.com/support/api/tickets.
 
-
 ## Usage
 
 Nothing to it:
 
     require 'zendesk'
     
-    # create instance with credentials
-    api = Zendesk::API(username: 'jane@example.com', password: 'password', deskname: 'example')
+    # create instance with credentials (see "Configuration, below")
+    api = Zendesk::API(email: 'jane@example.com', password: 'password', domain: 'example.zendesk.com')
     
     # get user data
     api.get_user(id: 1) # => { "user" => { ... } }
@@ -51,3 +50,12 @@ Nothing to it:
     api.post_user_twitter_handle('janestwitterhandle', id: 1) # => true (if successful)
   
 Check the `/examples` directory for additional examples.
+
+## Configuration
+
+This gem will look in the following places, in order, for configuration information:
+
+1. `:email`, `:password`, and `:domain`, passed directly to `Zendesk::API`
+1. The `ZENDESK_EMAIL`, `ZENDESK_PASSWORD`, and `ZENDESK_DOMAIN` environment variables
+1. `'email'`, `'password'`, and `'domain'` values in `{current_working_directory}/.zendesk.yml`
+1. `'email'`, `'password'`, and `'domain'` values in `~/.zendesk.yml`

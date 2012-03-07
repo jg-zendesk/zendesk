@@ -74,10 +74,9 @@ module Zendesk
   class Base
     include Zendesk::Definitions
     
-    requires :username, :password, :deskname
-    def initialize options
-      @credentials = options.slice(:username, :password, :deskname)
-      self.class.base_uri "http://#{@credentials[:deskname]}.zendesk.com"
+    def initialize options = { }
+      @credentials = Credentials.new(options)
+      self.class.base_uri "http://#{@credentials.domain}"
     end
     
     def credentials
@@ -136,7 +135,7 @@ module Zendesk
     end
 
     def resource path, options = { }
-      options = options.merge(user: @credentials[:username], password: @credentials[:password])
+      options = options.merge(user: @credentials.email, password: @credentials.password)
       unless options[:on_behalf_of].nil?
         (options[:headers] ||= {}).merge!("X-On-Behalf-Of" => options[:on_behalf_of])
         options.delete(:on_behalf_of)

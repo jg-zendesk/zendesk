@@ -3,7 +3,7 @@
 require "spec_helper"
 
 describe Zendesk::API do
-  let(:credentials) { { username: "jg@sogetthis.com", password: "password", deskname: "sogetthis" } }
+  let(:credentials) { { email: "jg@sogetthis.com", password: "password", domain: "sogetthis.zendesk.com" } }
   subject{ Zendesk::API.new(credentials) }
   
   it { subject.should be_an_instance_of Zendesk::API }

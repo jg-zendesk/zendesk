@@ -10,5 +10,6 @@ require 'ostruct'
 
 module Zendesk
   autoload :Base, "zendesk/base"
+  autoload :Credentials, "zendesk/credentials"
   autoload :API,  "zendesk/api"
 end
