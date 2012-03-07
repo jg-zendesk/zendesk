@@ -4,9 +4,7 @@ Ruby bindings to the Zendesk API
 
 ## What's Supported
 
-This is a quick and dirty implementation and it covers a very limited set of services (mostly the services involving the User resources)
-
-The `Zendesk::API` class declares the supported services:
+This is a quick and dirty implementation and it covers a very limited set of services (mostly the services involving the User resources). The `Zendesk::API` class declares which services are supported:
 
     Get :user,                  path: "/users/:id", :required => :id
     Get :user_identities,       path: "/users/:id/user_identities", :required => :id
@@ -29,3 +27,27 @@ To support additional services/endpoints, simply declare it in the `Zendesk::API
     Get :tickets, path: "/tickets/:id", :required => :id
     
 - declares support for fetching a Ticket resource as described in http://www.zendesk.com/support/api/tickets.
+
+
+## Usage
+
+Nothing to it:
+
+    require 'zendesk'
+    
+    # create instance with credentials
+    api = Zendesk::API(username: 'jane@example.com', password: 'password', deskname: 'example')
+    
+    # get user data
+    api.get_user(id: 1) # => { "user" => { ... } }
+    
+    # get user data on behalf of some other user
+    api.get_user(id: 1, as: 'jill@example.com') # => { "user" => { ... } }
+
+    # add user email 
+    api.post_user_email_address('jane.alternate@example.com', id: 1) # => true (if successful)
+    
+    # add user twitter handle
+    api.post_user_twitter_handle('janestwitterhandle', id: 1) # => true (if successful)
+  
+Check the `/examples` directory for additional examples.
