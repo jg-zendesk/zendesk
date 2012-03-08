@@ -8,6 +8,8 @@ module Zendesk
     end
     
     module ClassMethods
+      include NamedParameters
+      
       def format value = nil
         value ? @format = value : @format
       end
@@ -15,24 +17,24 @@ module Zendesk
       def base_uri value = nil
         value ? @base_uri = value : @base_uri
       end
-      
-      def Put name, options = { }
-        options.assert_valid_keys(:path, :required, :optional, :transform)
+
+      has_named_parameters :put, :required => :path, :optional => [ :optional, :transform ]
+      def put name, options = { }
         synthesize_method name, :put, options.merge(with_payload: true)
       end
       
-      def Post name, options = { }
-        options.assert_valid_keys(:path, :required, :optional, :transform)
+      has_named_parameters :post, :required => :path, :optional => [ :optional, :transform ]
+      def post name, options = { }
         synthesize_method name, :post, options.merge(with_payload: true)
       end
       
-      def Delete name, options = { }
-        options.assert_valid_keys(:path, :required, :optional)
+      has_named_parameters :delete, :required => :path, :optional => [ :optional ]
+      def delete name, options = { }
         synthesize_method name, :delete, options
       end
       
-      def Get name, options = { }
-        options.assert_valid_keys(:path, :required, :optional)
+      has_named_parameters :get, :required => :path, :optional => [ :optional ]
+      def get name, options = { }
         synthesize_method name, :get, options
       end
       
@@ -42,8 +44,13 @@ module Zendesk
         params.tap{ |params| params[:optional] << :as unless (params[:optional] ||= []).include?(:as) }
       end
       
+      def required_parameters path
+        { required: path.split("/").select{ |n| n =~ /^:/ }.map{ |n| n[1..-1].to_sym } }
+      end
+      
       def synthesize_method name, action, options
-        mname = :"#{action}_#{name}"
+        mname   = :"#{action}_#{name}"
+        options = options.merge(required_parameters options[:path])
         has_named_parameters mname, compose_parameter_definitions(options)
         define_method mname do |*args|
           payload = args.first if options[:with_payload]
@@ -73,7 +80,8 @@ module Zendesk
   
   class Base
     include Zendesk::Definitions
-    
+
+    recognizes :email, :domain, :password
     def initialize options = { }
       @credentials = Credentials.new(options)
       self.class.base_uri "http://#{@credentials.domain}"

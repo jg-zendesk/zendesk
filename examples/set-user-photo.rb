@@ -9,7 +9,7 @@ rescue LoadError
 end
 
 # create API instance with credentials
-api = Zendesk::API.new(username: 'jg@sogetthis.com', password: 'password', deskname: 'sogetthis')
+api = Zendesk::API.new(email: 'jg@sogetthis.com', password: 'password', domain: 'sogetthis.zendesk.com')
 
 # set user photo
 data = { remote_photo_url: "http://www.gravatar.com/avatar/2d5f093edea7d11c9716d72a0a31126e.png" }

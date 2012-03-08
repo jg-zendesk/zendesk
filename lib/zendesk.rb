@@ -9,7 +9,7 @@ require "active_support/core_ext/hash"
 require 'ostruct'
 
 module Zendesk
-  autoload :Base, "zendesk/base"
+  autoload :Base,        "zendesk/base"
   autoload :Credentials, "zendesk/credentials"
-  autoload :API,  "zendesk/api"
+  autoload :API,         "zendesk/api"
 end

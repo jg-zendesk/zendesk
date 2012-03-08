@@ -2,7 +2,7 @@ module Zendesk
   class Credentials
     attr_reader :domain, :email, :password
 
-    def initialize(params = {})
+    def initialize params = { }
       @domain   = params[:domain]
       @email    = params[:email]
       @password = params[:password]

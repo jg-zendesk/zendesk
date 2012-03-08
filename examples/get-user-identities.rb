@@ -9,7 +9,7 @@ rescue LoadError
 end
 
 # create API instance with credentials
-api = Zendesk::API.new(username: 'jg@sogetthis.com', password: 'password', deskname: 'sogetthis')
+api = Zendesk::API.new(email: 'jg@sogetthis.com', password: 'password', domain: 'sogetthis.zendesk.com')
 
 # get user identities
 puts api.get_user_identities(id: 174909853)
