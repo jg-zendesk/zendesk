@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path(File.dirname(__FILE__) + '/../lib')
+require "zendesk"
+
+if ARGV.count != 2
+  puts "usage: #{File.basename(__FILE__)} <name> <email@example.com>" 
+  exit 1
+end
+
+name, email = *ARGV
+api = Zendesk::API.new('jg@sogetthis.com', 'password', 'sogetthis.zendesk.com')
+
+begin
+  # create a new user
+  userid = api.create_user(email, name, 0, 4)
+  user   = api.get_user userid
+  puts "user created: #{user.inspect}"
+  puts
+
+  # open a ticket as the user
+  ticketid = api.open_ticket 'ticket description', requester_email: user["email"]
+  ticket   = api.get_ticket ticketid
+  puts "ticket opened: #{ticket.inspect}"
+  puts 
+
+  # close the ticket
+  closed = api.close_ticket ticketid
+  puts "ticket closed: #{closed}"
+  puts
+  
+  # -- uncomment the following if you want to cleanup after...
+  
+  #
+  # print "deleting ticket: "
+  # puts "ok" if api.delete_ticket(ticket["nice_id"])
+  # 
+  # print "deleting user: "
+  # puts "ok" if api.delete_user(user["id"])
+  #
+rescue Zendesk::API::RequestError => e
+  puts "request failed with the following message:"
+  puts e.message
+end
+

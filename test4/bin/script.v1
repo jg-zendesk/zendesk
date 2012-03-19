@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+
+class Blog < Object
+  def initialize(options = {})
+    @header = options[:header]
+    @footer = options[:bottom]
+    @renderer = options[:renderer]
+    @posts = options[:posts]
+
+  end
+
+  class_eval do
+    def all_posts
+      @posts
+    end
+  end
+
+  def htmlDiv(content)
+    return "<div>" + content + "</div>"
+  end
+
+  def htmlH1(content)
+    return ("<h1>" + content + "</h1>")
+  end
+
+
+  def render
+    output = [htmlDiv(htmlH1 @header)]
+     for p in all_posts.sort{|a,b| a[:created_at].to_i <=> b[:created_at].to_i }
+      self.current_post = p
+      output = output + render_post(output)
+      output = output + render_comments()
+    end
+    output.push(htmlDiv(@footer))
+  end
+
+
+  def current_post=(post)
+    @current_post = post
+  end
+
+
+  def render_post(output)
+    begin
+      [htmlDiv(@renderer.call(@current_post))]
+    rescue
+      []
+    end
+  end
+
+  def render_comments
+    [*@current_post[:comments]].each{|c| htmlDiv(c)}
+  end
+
+end
+
+require 'date'
+posts = [
+  { :title => "I like Zendesk", :comments => "Dogs are awesome", :created_at => Time.now },
+  { :title => "I like Bananas", :comments => ["Typos are awesome"], :created_at => Time.now },
+  { :title => nil, :comments => ["wibbles are wobble", "yay"], :created_at => Time.now }
+]
+
+blog = Blog.new(:posts => posts, :header => "my blog", :bottom => "Copyright Wobble (2012)", :renderer => Proc.new{|post| "<p>#{post[:title].upcase}</p>" })
+
+puts blog.render

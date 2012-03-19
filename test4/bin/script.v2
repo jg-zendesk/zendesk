@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path(File.dirname(__FILE__) + "/../lib")
+require "blog"
+
+posts = [ 
+  { comments: "Dogs are awesome",    title: "I like Zendesk" },
+  { comments: ["Typos are awesome"], title: "I like Bananas" },
+  { comments: ["wibbles are wobble", "yay" ] } 
+] 
+      
+blog = Blog.create(header: "my blog", footer: "Copyright Wobble (2012)")            
+posts.each{ |post| blog.submit post }
+
+output = Blog::Publisher.print(blog)
+puts output

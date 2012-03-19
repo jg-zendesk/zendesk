@@ -1,0 +1,13 @@
+/* lorem ipsum dolor sit 
+   amet, 
+   consecteturm. */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* lorem ipsum dolor sit 
+   *amet, consecteturm. */
+#content {
+  margin: 10px
+}
